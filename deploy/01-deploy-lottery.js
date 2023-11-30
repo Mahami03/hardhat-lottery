@@ -11,7 +11,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     let vrfCoordinatorV2Address, subscriptionId
 
     if (developmentChains.includes(network.name)) {
-        const vrfCoordinatorV2Mock = await ethers.getContractAt("VRFCoordinatorV2Mock")
+        const vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
         vrfCoordinatorV2Address = vrfCoordinatorV2Mock.target
         const transactionResponse = await vrfCoordinatorV2Mock.createSubscription()
         const transactionReciept = await transactionResponse.wait(1)
@@ -27,11 +27,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const callbackGasLimit = networkConfig[chainID]["callbackGasLimit"]
     const interval = networkConfig[chainID]["interval"]
 
-    const argument = [vrfCoordinatorV2Address, entranceFee, keyHash, subscriptionId, callbackGasLimit, interval]
+    const args = [vrfCoordinatorV2Address, entranceFee, keyHash, subscriptionId, callbackGasLimit, interval]
 
     const lottery = await deploy("Lottery", {
         from: deployer,
-        args: argument,
+        args: args,
         log: true,
         waitConfirmations: network.config.blockConfirmations || 1,
     })
