@@ -4,7 +4,7 @@ const { verify } = require("../helper-hardhat-config")
 
 const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther("1")
 
-module.exports = async ({ getNamedAccounts, deployments }) => {
+module.exports = async function ({ getNamedAccounts, deployments }) {
     const { deploy, log } = deployments
     const { deployer } = await getNamedAccounts()
     const chainID = network.config.chainId
@@ -12,7 +12,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
     if (developmentChains.includes(network.name)) {
         const vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
-        vrfCoordinatorV2Address = vrfCoordinatorV2Mock.target
+        vrfCoordinatorV2Address = vrfCoordinatorV2Mock.address
         const transactionResponse = await vrfCoordinatorV2Mock.createSubscription()
         const transactionReciept = await transactionResponse.wait(1)
         subscriptionId = transactionReciept.events[0].args.subId
@@ -41,7 +41,5 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         await verify(lottery.address, args)
     }
     log("-----------------------------------")
-
-    module.exports.tags = ["all", "lottery"]
-
 }
+module.exports.tags = ["all", "lottery"]
